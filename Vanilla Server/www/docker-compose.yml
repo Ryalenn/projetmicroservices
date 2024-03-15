@@ -1,0 +1,32 @@
+
+version: '3'
+
+services:
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+    restart: always
+    volumes:
+      - ./data/redisinsight:/db
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
+  
+haproxy:
+  build:
+    context: .
+    dockerfile: Dockerfile-haproxy
+  ports:
+    - "3000:3000"
+  depends_on:
+    - motus_app_1
+    - motus_app_2
+
